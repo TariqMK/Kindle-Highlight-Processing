@@ -37,7 +37,7 @@ python3 MyClippings_Highlight_Parser.py
 Example:
 
 <p align="center">
-  <img width="690" height="134" alt="image" src="https://github.com/user-attachments/assets/e83f1a50-314a-4540-b1f6-9b1c4571854e" />
+  <img width="676" height="130" alt="image" src="https://github.com/user-attachments/assets/3b03e84a-928a-48d8-a46a-ab5cd9372fb5" />
 </p>
 
 **Known Issues:**
