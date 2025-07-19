@@ -22,6 +22,12 @@ This script takes `My Clippings.txt` as the input, scans it for all highlights, 
 
 **Usage Specifics:**
 
+Download/copy the script and run using:
+
+```
+python3 MyClippings_Highlight_Parser.py
+```
+
 - The `My Clippings.txt` file must be placed in the same directory as the script
 - The `My Clippings.txt` file must not be renamed, otherwise it will not be detected
 - The new text files for each related book will be placed in a new folder in the same directory named `Highlights_by_Book`
