@@ -12,7 +12,7 @@ Details for each individual script are as below.
 
 ---
 
-## MyClippings Highlight Parser.py
+## MyClippings_Highlight_Parser.py
 
 **Intent:**
 
