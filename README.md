@@ -74,4 +74,4 @@ All required folders will be automatically created. Enjoy!
 
 **Known Issues:**
 
-- Over the years, Amazon has slightly changed the syntax of highlight metadata within `My Clippings.txt`. This script works best for files from 2020 onwards, but still works well for older files, though you may notice some formatting inconsistencies
+- Over the years, Amazon has slightly changed the syntax of highlight metadata within `My Clippings.txt`. This script works best for highlights taken from 2020 onwards, but still works well for older files, though you may notice some formatting inconsistencies. If you experience any problems, pelase raise an issue and I will look into it
