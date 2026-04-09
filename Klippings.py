@@ -174,7 +174,7 @@ class KindleHighlightsGUI:
             self.root = ctk.CTk()
             self._tk_root = None
         
-        self.root.title("Kindle Highlights Processor")
+        self.root.title("Klippings")
         self.root.geometry("900x820")
         
         # Load saved preferences
@@ -200,23 +200,32 @@ class KindleHighlightsGUI:
         # Title
         self.title_label = ctk.CTkLabel(
             self.main_scroll_frame,
-            text="Kindle Highlights Processor",
-            font=ctk.CTkFont(size=32, weight="bold")
+            text="Klippings",
+            font=ctk.CTkFont(size=36, weight="bold")
         )
-        self.title_label.grid(row=0, column=0, padx=40, pady=(24, 6), sticky="w")
-        
+        self.title_label.grid(row=0, column=0, padx=40, pady=(24, 2), sticky="w")
+
+        # Secondary title
+        self.secondary_label = ctk.CTkLabel(
+            self.main_scroll_frame,
+            text="Kindle Highlights Processor",
+            font=ctk.CTkFont(size=15, weight="bold"),
+            text_color=("gray60", "gray55")
+        )
+        self.secondary_label.grid(row=1, column=0, padx=40, pady=(0, 2), sticky="w")
+
         # Subtitle
         self.subtitle_label = ctk.CTkLabel(
             self.main_scroll_frame,
             text="Parse and simplify your Kindle highlights",
-            font=ctk.CTkFont(size=15),
-            text_color=("gray70", "gray50")
+            font=ctk.CTkFont(size=13),
+            text_color=("gray70", "gray45")
         )
-        self.subtitle_label.grid(row=1, column=0, padx=40, pady=(0, 14), sticky="w")
+        self.subtitle_label.grid(row=2, column=0, padx=40, pady=(0, 14), sticky="w")
         
         # File selection frame
         self.file_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.file_frame.grid(row=2, column=0, padx=40, pady=(0, 12), sticky="ew")
+        self.file_frame.grid(row=3, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.file_frame.grid_columnconfigure(1, weight=1)
         
         file_title = ctk.CTkLabel(
@@ -259,7 +268,7 @@ class KindleHighlightsGUI:
         
         # Book selection frame (initially hidden)
         self.book_selection_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.book_selection_frame.grid(row=3, column=0, padx=40, pady=(0, 12), sticky="ew")
+        self.book_selection_frame.grid(row=4, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.book_selection_frame.grid_columnconfigure(0, weight=1)
         self.book_selection_frame.grid_remove()  # Hidden by default
         
@@ -316,7 +325,7 @@ class KindleHighlightsGUI:
         
         # Output directory frame
         self.output_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.output_frame.grid(row=4, column=0, padx=40, pady=(0, 12), sticky="ew")
+        self.output_frame.grid(row=5, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.output_frame.grid_columnconfigure(1, weight=1)
         
         output_title = ctk.CTkLabel(
@@ -354,7 +363,7 @@ class KindleHighlightsGUI:
         
         # Processing options frame
         self.options_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.options_frame.grid(row=5, column=0, padx=40, pady=(0, 12), sticky="ew")
+        self.options_frame.grid(row=6, column=0, padx=40, pady=(0, 12), sticky="ew")
         
         options_title = ctk.CTkLabel(
             self.options_frame,
@@ -388,7 +397,7 @@ class KindleHighlightsGUI:
         
         # Buttons frame
         self.buttons_frame = ctk.CTkFrame(self.main_scroll_frame, fg_color="transparent")
-        self.buttons_frame.grid(row=6, column=0, padx=40, pady=(0, 12), sticky="ew")
+        self.buttons_frame.grid(row=7, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.buttons_frame.grid_columnconfigure((0, 1), weight=1)
         
         # Process button
@@ -420,7 +429,7 @@ class KindleHighlightsGUI:
         
         # Console/Log frame
         self.log_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.log_frame.grid(row=7, column=0, padx=40, pady=(0, 8), sticky="ew")
+        self.log_frame.grid(row=8, column=0, padx=40, pady=(0, 8), sticky="ew")
         self.log_frame.grid_rowconfigure(1, weight=1)
         self.log_frame.grid_columnconfigure(0, weight=1)
         
@@ -452,7 +461,7 @@ class KindleHighlightsGUI:
             fg_color=("gray55", "gray25"),
             hover_color=("gray45", "gray20")
         )
-        self.clear_button.grid(row=8, column=0, padx=40, pady=(0, 24), sticky="ew")
+        self.clear_button.grid(row=9, column=0, padx=40, pady=(0, 24), sticky="ew")
         
         # Initial message
         self.log("┌─────────────────────────────────────────────────────────────┐")
