@@ -1,23 +1,9 @@
-"""
-Kindle Highlights Processor - All-in-One GUI
-A beautiful, dark-mode application for processing Kindle highlights
-
-REQUIREMENTS:
-Install the following packages before running:
-    pip install customtkinter pillow tkinterdnd2
-
-Or install all at once:
-    pip install customtkinter pillow tkinterdnd2
-"""
-
 import tkinter as tk
 from tkinter import messagebox, filedialog
 import customtkinter as ctk
 import os
 import re
 import threading
-from PIL import Image, ImageDraw, ImageFont
-import textwrap
 try:
     from tkinterdnd2 import DND_FILES, TkinterDnD
 except ImportError:
@@ -142,106 +128,24 @@ def read_file_with_encoding(filename):
 
 def simplify_highlights(input_dir='Highlights_by_Book'):
     """Simplify all highlight files in directory"""
+    # Output goes to a sibling folder named 'Highlights_by_Book_(Simple)'
+    parent_dir = os.path.dirname(input_dir) or '.'
+    simple_dir = os.path.join(parent_dir, 'Highlights_by_Book_(Simple)')
+    os.makedirs(simple_dir, exist_ok=True)
+
     results = []
     for filename in os.listdir(input_dir):
-        if filename.endswith('.txt') and not filename.endswith('-S.txt'):
+        if filename.endswith('.txt'):
             filepath = os.path.join(input_dir, filename)
             text = read_file_with_encoding(filepath)
             
             book_name, author = extract_book_info(text)
             if book_name and author:
                 formatted_text = format_highlights(text, book_name, author)
-                output_filename = os.path.join(input_dir, f'{os.path.splitext(filename)[0]}-S.txt')
+                output_filename = os.path.join(simple_dir, filename)
                 with open(output_filename, 'w', encoding='utf-8') as output_file:
                     output_file.write(formatted_text)
                 results.append(book_name)
-    
-    return results
-
-
-# ============================================================================
-# SCRIPT 3: Generate Quote Images
-# ============================================================================
-
-def generate_quote_images(input_dir='Highlights_by_Book', font_path='Files/Fonts/Vollkorn-Regular.ttf'):
-    """Generate WebP images from simplified highlights"""
-    # Configuration
-    line_spacing = 15
-    short_quote_threshold = 550
-    original_image_width = 1080
-    original_image_height = 1080
-    larger_image_width = 1080
-    larger_image_height = 1350
-    side_padding = 20
-    bottom_padding = 60
-    
-    results = []
-    txt_files = [f for f in os.listdir(input_dir) if f.endswith('-S.txt')]
-    
-    for txt_file in txt_files:
-        filepath = os.path.join(input_dir, txt_file)
-        with open(filepath, 'r', encoding='utf-8') as file:
-            text = file.read()
-        
-        sections = text.split('\n\n---\n\n')
-        book_info = sections[0].split('\n')
-        book_name = re.sub(r'[^\w\s]', '', book_info[0].strip())
-        author = re.sub(r'[^\w\s]', '', book_info[1].strip())
-        
-        book_folder = os.path.join(input_dir, book_name)
-        os.makedirs(book_folder, exist_ok=True)
-        
-        highlight_pattern = re.compile(r'\d{1,3}\.\s*', re.MULTILINE)
-        sections[1:] = [highlight_pattern.sub('', section) for section in sections[1:]]
-        
-        image_count = 0
-        for i, highlight in enumerate(sections[1:]):
-            if not highlight.strip():
-                continue
-                
-            highlight = highlight[0].capitalize() + highlight[1:]
-            
-            if len(highlight) <= short_quote_threshold:
-                image_width, image_height = original_image_width, original_image_height
-            else:
-                image_width, image_height = larger_image_width, larger_image_height
-            
-            filename = f"Highlight_{i + 1:04}.webp"
-            image = Image.new('RGB', (image_width, image_height), color='white')
-            draw = ImageDraw.Draw(image)
-            
-            initial_font_size = 40
-            font = ImageFont.truetype(font_path, int(initial_font_size))
-            
-            wrapped_text = textwrap.fill(highlight, width=43)
-            wrapped_text_lines = wrapped_text.split('\n')
-            wrapped_text_lines = [line.strip() for line in wrapped_text_lines if line.strip()]
-            wrapped_text = '\n'.join(wrapped_text_lines)
-            
-            bbox = draw.textbbox((0, 0), wrapped_text, font=font, spacing=line_spacing)
-            text_width, text_height = bbox[2] - bbox[0], bbox[3] - bbox[1]
-            
-            text_x = (image_width - text_width) / 2
-            text_y = (image_height - text_height) / 2
-            
-            draw.multiline_text((text_x, text_y), wrapped_text, fill='black', font=font, align="left", spacing=line_spacing)
-            
-            info_font = ImageFont.truetype(font_path, 27)
-            info_text = f'{book_name} | {author}'.strip()
-            info_text = re.sub(r'[^\w\s|]', '', info_text)
-            
-            info_size = draw.textbbox((0, 0), info_text, font=info_font)
-            info_width, info_height = info_size[2] - info_size[0], info_size[3] - info_size[1]
-            
-            info_x = (image_width - info_width) / 2
-            info_y = image_height - side_padding - info_height - bottom_padding
-            
-            draw.text((info_x, info_y), info_text, fill='black', font=info_font)
-            
-            image.save(os.path.join(book_folder, filename), format='WEBP', quality=85)
-            image_count += 1
-        
-        results.append((book_name, image_count))
     
     return results
 
@@ -271,7 +175,7 @@ class KindleHighlightsGUI:
             self._tk_root = None
         
         self.root.title("Kindle Highlights Processor")
-        self.root.geometry("900x950")  # Reduced back to 950 since we now have scrolling
+        self.root.geometry("900x820")
         
         # Load saved preferences
         self.config_file = os.path.join(os.path.expanduser("~"), ".kindle_highlights_config.json")
@@ -299,28 +203,28 @@ class KindleHighlightsGUI:
             text="Kindle Highlights Processor",
             font=ctk.CTkFont(size=32, weight="bold")
         )
-        self.title_label.grid(row=0, column=0, padx=40, pady=(40, 10), sticky="w")
+        self.title_label.grid(row=0, column=0, padx=40, pady=(24, 6), sticky="w")
         
         # Subtitle
         self.subtitle_label = ctk.CTkLabel(
             self.main_scroll_frame,
-            text="Transform your Kindle highlights into beautiful quote images",
+            text="Parse and simplify your Kindle highlights",
             font=ctk.CTkFont(size=15),
             text_color=("gray70", "gray50")
         )
-        self.subtitle_label.grid(row=1, column=0, padx=40, pady=(0, 20), sticky="w")
+        self.subtitle_label.grid(row=1, column=0, padx=40, pady=(0, 14), sticky="w")
         
         # File selection frame
         self.file_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.file_frame.grid(row=2, column=0, padx=40, pady=(0, 20), sticky="ew")
+        self.file_frame.grid(row=2, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.file_frame.grid_columnconfigure(1, weight=1)
         
         file_title = ctk.CTkLabel(
             self.file_frame,
             text="My Clippings File",
-            font=ctk.CTkFont(size=18, weight="bold")
+            font=ctk.CTkFont(size=16, weight="bold")
         )
-        file_title.grid(row=0, column=0, columnspan=3, padx=25, pady=(20, 15), sticky="w")
+        file_title.grid(row=0, column=0, columnspan=3, padx=20, pady=(14, 10), sticky="w")
         
         # File path display
         self.file_path_var = tk.StringVar(value="No file selected - Click Browse or drag & drop file here")
@@ -328,11 +232,11 @@ class KindleHighlightsGUI:
             self.file_frame,
             textvariable=self.file_path_var,
             font=ctk.CTkFont(size=13),
-            height=45,
+            height=38,
             state="readonly",
             fg_color=("gray85", "gray20")
         )
-        self.file_path_entry.grid(row=1, column=0, columnspan=2, padx=25, pady=(0, 20), sticky="ew")
+        self.file_path_entry.grid(row=1, column=0, columnspan=2, padx=20, pady=(0, 14), sticky="ew")
         
         # Enable drag and drop if available
         if TkinterDnD and DND_FILES:
@@ -344,31 +248,31 @@ class KindleHighlightsGUI:
             self.file_frame,
             text="📁 Browse",
             command=self.browse_file,
-            font=ctk.CTkFont(size=14, weight="bold"),
-            width=120,
-            height=45,
+            font=ctk.CTkFont(size=13, weight="bold"),
+            width=110,
+            height=38,
             corner_radius=10,
             fg_color=("#3b8ed0", "#1f6aa5"),
             hover_color=("#36719f", "#144870")
         )
-        self.browse_button.grid(row=1, column=2, padx=(10, 25), pady=(0, 20), sticky="e")
+        self.browse_button.grid(row=1, column=2, padx=(8, 20), pady=(0, 14), sticky="e")
         
         # Book selection frame (initially hidden)
         self.book_selection_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.book_selection_frame.grid(row=3, column=0, padx=40, pady=(0, 20), sticky="ew")
+        self.book_selection_frame.grid(row=3, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.book_selection_frame.grid_columnconfigure(0, weight=1)
         self.book_selection_frame.grid_remove()  # Hidden by default
         
         book_selection_title = ctk.CTkLabel(
             self.book_selection_frame,
             text="Select Books to Process",
-            font=ctk.CTkFont(size=18, weight="bold")
+            font=ctk.CTkFont(size=16, weight="bold")
         )
-        book_selection_title.grid(row=0, column=0, padx=25, pady=(20, 10), sticky="w")
+        book_selection_title.grid(row=0, column=0, padx=20, pady=(14, 8), sticky="w")
         
         # Buttons for select all/none
         self.book_buttons_frame = ctk.CTkFrame(self.book_selection_frame, fg_color="transparent")
-        self.book_buttons_frame.grid(row=1, column=0, padx=25, pady=(0, 10), sticky="w")
+        self.book_buttons_frame.grid(row=1, column=0, padx=20, pady=(0, 8), sticky="w")
         
         self.select_all_button = ctk.CTkButton(
             self.book_buttons_frame,
@@ -399,11 +303,11 @@ class KindleHighlightsGUI:
         # Scrollable frame for book checkboxes
         self.books_scroll_frame = ctk.CTkScrollableFrame(
             self.book_selection_frame,
-            height=200,
+            height=160,
             corner_radius=10,
             fg_color=("gray90", "gray17")
         )
-        self.books_scroll_frame.grid(row=2, column=0, padx=25, pady=(0, 20), sticky="ew")
+        self.books_scroll_frame.grid(row=2, column=0, padx=20, pady=(0, 14), sticky="ew")
         self.books_scroll_frame.grid_columnconfigure(0, weight=1)
         
         # Dictionary to store book checkboxes
@@ -412,15 +316,15 @@ class KindleHighlightsGUI:
         
         # Output directory frame
         self.output_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.output_frame.grid(row=4, column=0, padx=40, pady=(0, 20), sticky="ew")
+        self.output_frame.grid(row=4, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.output_frame.grid_columnconfigure(1, weight=1)
         
         output_title = ctk.CTkLabel(
             self.output_frame,
             text="Output Directory",
-            font=ctk.CTkFont(size=18, weight="bold")
+            font=ctk.CTkFont(size=16, weight="bold")
         )
-        output_title.grid(row=0, column=0, columnspan=3, padx=25, pady=(20, 15), sticky="w")
+        output_title.grid(row=0, column=0, columnspan=3, padx=20, pady=(14, 10), sticky="w")
         
         # Output directory display
         self.output_path_var = tk.StringVar(value=self.last_output_dir)
@@ -428,36 +332,36 @@ class KindleHighlightsGUI:
             self.output_frame,
             textvariable=self.output_path_var,
             font=ctk.CTkFont(size=13),
-            height=45,
+            height=38,
             state="readonly",
             fg_color=("gray85", "gray20")
         )
-        self.output_path_entry.grid(row=1, column=0, columnspan=2, padx=25, pady=(0, 20), sticky="ew")
+        self.output_path_entry.grid(row=1, column=0, columnspan=2, padx=20, pady=(0, 14), sticky="ew")
         
         # Browse output button
         self.output_browse_button = ctk.CTkButton(
             self.output_frame,
             text="📂 Browse",
             command=self.browse_output_dir,
-            font=ctk.CTkFont(size=14, weight="bold"),
-            width=120,
-            height=45,
+            font=ctk.CTkFont(size=13, weight="bold"),
+            width=110,
+            height=38,
             corner_radius=10,
             fg_color=("#3b8ed0", "#1f6aa5"),
             hover_color=("#36719f", "#144870")
         )
-        self.output_browse_button.grid(row=1, column=2, padx=(10, 25), pady=(0, 20), sticky="e")
+        self.output_browse_button.grid(row=1, column=2, padx=(8, 20), pady=(0, 14), sticky="e")
         
         # Processing options frame
         self.options_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.options_frame.grid(row=5, column=0, padx=40, pady=(0, 20), sticky="ew")
+        self.options_frame.grid(row=5, column=0, padx=40, pady=(0, 12), sticky="ew")
         
         options_title = ctk.CTkLabel(
             self.options_frame,
             text="Select Processing Steps",
-            font=ctk.CTkFont(size=18, weight="bold")
+            font=ctk.CTkFont(size=16, weight="bold")
         )
-        options_title.grid(row=0, column=0, padx=25, pady=(20, 15), sticky="w")
+        options_title.grid(row=0, column=0, padx=20, pady=(14, 10), sticky="w")
         
         # Checkboxes for each script
         self.script1_var = tk.BooleanVar(value=True)
@@ -465,37 +369,26 @@ class KindleHighlightsGUI:
             self.options_frame,
             text="Parse My Clippings.txt → Individual book files",
             variable=self.script1_var,
-            font=ctk.CTkFont(size=15),
-            checkbox_width=26,
-            checkbox_height=26
+            font=ctk.CTkFont(size=14),
+            checkbox_width=24,
+            checkbox_height=24
         )
-        self.script1_check.grid(row=1, column=0, padx=25, pady=10, sticky="w")
+        self.script1_check.grid(row=1, column=0, padx=20, pady=7, sticky="w")
         
         self.script2_var = tk.BooleanVar(value=True)
         self.script2_check = ctk.CTkCheckBox(
             self.options_frame,
             text="Simplify highlights (remove metadata)",
             variable=self.script2_var,
-            font=ctk.CTkFont(size=15),
-            checkbox_width=26,
-            checkbox_height=26
+            font=ctk.CTkFont(size=14),
+            checkbox_width=24,
+            checkbox_height=24
         )
-        self.script2_check.grid(row=2, column=0, padx=25, pady=10, sticky="w")
-        
-        self.script3_var = tk.BooleanVar(value=True)
-        self.script3_check = ctk.CTkCheckBox(
-            self.options_frame,
-            text="Generate quote images (WebP, quality 85)",
-            variable=self.script3_var,
-            font=ctk.CTkFont(size=15),
-            checkbox_width=26,
-            checkbox_height=26
-        )
-        self.script3_check.grid(row=3, column=0, padx=25, pady=(10, 20), sticky="w")
+        self.script2_check.grid(row=2, column=0, padx=20, pady=(7, 14), sticky="w")
         
         # Buttons frame
         self.buttons_frame = ctk.CTkFrame(self.main_scroll_frame, fg_color="transparent")
-        self.buttons_frame.grid(row=6, column=0, padx=40, pady=(0, 20), sticky="ew")
+        self.buttons_frame.grid(row=6, column=0, padx=40, pady=(0, 12), sticky="ew")
         self.buttons_frame.grid_columnconfigure((0, 1), weight=1)
         
         # Process button
@@ -503,8 +396,8 @@ class KindleHighlightsGUI:
             self.buttons_frame,
             text="▶ Start Processing",
             command=self.start_processing,
-            font=ctk.CTkFont(size=18, weight="bold"),
-            height=55,
+            font=ctk.CTkFont(size=16, weight="bold"),
+            height=46,
             corner_radius=12,
             fg_color=("#2fa572", "#1a7a4a"),
             hover_color=("#26885f", "#156038")
@@ -516,8 +409,8 @@ class KindleHighlightsGUI:
             self.buttons_frame,
             text="⏹ Cancel",
             command=self.cancel_processing,
-            font=ctk.CTkFont(size=16, weight="bold"),
-            height=55,
+            font=ctk.CTkFont(size=14, weight="bold"),
+            height=46,
             corner_radius=12,
             fg_color=("#d32f2f", "#b71c1c"),
             hover_color=("#c62828", "#a71a1a"),
@@ -527,26 +420,26 @@ class KindleHighlightsGUI:
         
         # Console/Log frame
         self.log_frame = ctk.CTkFrame(self.main_scroll_frame, corner_radius=15)
-        self.log_frame.grid(row=7, column=0, padx=40, pady=(0, 10), sticky="ew")
+        self.log_frame.grid(row=7, column=0, padx=40, pady=(0, 8), sticky="ew")
         self.log_frame.grid_rowconfigure(1, weight=1)
         self.log_frame.grid_columnconfigure(0, weight=1)
         
         log_title = ctk.CTkLabel(
             self.log_frame,
             text="Processing Log",
-            font=ctk.CTkFont(size=16, weight="bold")
+            font=ctk.CTkFont(size=14, weight="bold")
         )
-        log_title.grid(row=0, column=0, padx=20, pady=(20, 8), sticky="w")
+        log_title.grid(row=0, column=0, padx=20, pady=(14, 6), sticky="w")
         
         # Text widget for log output with fixed height
         self.log_text = ctk.CTkTextbox(
             self.log_frame,
             wrap="word",
-            font=ctk.CTkFont(family="Consolas", size=13),
+            font=ctk.CTkFont(family="Consolas", size=12),
             corner_radius=10,
-            height=300  # Fixed height so it doesn't expand indefinitely
+            height=220
         )
-        self.log_text.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
+        self.log_text.grid(row=1, column=0, padx=20, pady=(0, 14), sticky="ew")
         
         # Clear log button (below log frame)
         self.clear_button = ctk.CTkButton(
@@ -559,7 +452,7 @@ class KindleHighlightsGUI:
             fg_color=("gray55", "gray25"),
             hover_color=("gray45", "gray20")
         )
-        self.clear_button.grid(row=8, column=0, padx=40, pady=(0, 40), sticky="ew")
+        self.clear_button.grid(row=8, column=0, padx=40, pady=(0, 24), sticky="ew")
         
         # Initial message
         self.log("┌─────────────────────────────────────────────────────────────┐")
@@ -568,8 +461,7 @@ class KindleHighlightsGUI:
         self.log("📋 Instructions:")
         self.log("  1. Select 'My Clippings.txt' (Browse or drag & drop)")
         self.log("  2. Choose output directory (remembers last selection)")
-        self.log("  3. Ensure 'Files/Fonts/Vollkorn-Regular.ttf' exists (for Step 3)")
-        self.log("  4. Select processing steps and click 'Start Processing'\n")
+        self.log("  3. Select processing steps and click 'Start Processing'\n")
         if not TkinterDnD:
             self.log("⚠️  Drag & drop not available (tkinterdnd2 not installed)")
             self.log("   Install with: pip install tkinterdnd2\n")
@@ -748,7 +640,7 @@ class KindleHighlightsGUI:
             )
             return False
         
-        if self.script2_var.get() or self.script3_var.get():
+        if self.script2_var.get():
             highlights_dir = os.path.join(output_dir, "Highlights_by_Book")
             if not os.path.exists(highlights_dir):
                 if not self.script1_var.get():
@@ -758,21 +650,11 @@ class KindleHighlightsGUI:
                     )
                     return False
         
-        if self.script3_var.get():
-            script_dir = os.path.dirname(os.path.abspath(__file__)) if os.path.dirname(os.path.abspath(__file__)) else '.'
-            font_path = os.path.join(script_dir, "Files", "Fonts", "Vollkorn-Regular.ttf")
-            if not os.path.exists(font_path):
-                messagebox.showerror(
-                    "Missing Font", 
-                    f"❌ Font file not found!\n\nExpected location:\n{font_path}\n\nPlease ensure the font file exists."
-                )
-                return False
-        
         return True
         
     def start_processing(self):
         """Start the processing in a separate thread"""
-        if not (self.script1_var.get() or self.script2_var.get() or self.script3_var.get()):
+        if not (self.script1_var.get() or self.script2_var.get()):
             messagebox.showwarning("No Steps Selected", "⚠️ Please select at least one processing step!")
             return
         
@@ -847,6 +729,8 @@ class KindleHighlightsGUI:
                 
                 try:
                     input_dir = os.path.join(output_base, "Highlights_by_Book")
+                    simple_dir = os.path.join(output_base, "Highlights_by_Book_(Simple)")
+                    os.makedirs(simple_dir, exist_ok=True)
                     
                     # Process files one by one with cancellation checks
                     for filename in os.listdir(input_dir):
@@ -854,132 +738,29 @@ class KindleHighlightsGUI:
                             self.log("\n❌ Processing cancelled by user")
                             return
                             
-                        if filename.endswith('.txt') and not filename.endswith('-S.txt'):
+                        if filename.endswith('.txt'):
                             filepath = os.path.join(input_dir, filename)
                             text = read_file_with_encoding(filepath)
                             
                             book_name, author = extract_book_info(text)
                             if book_name and author:
                                 formatted_text = format_highlights(text, book_name, author)
-                                output_filename = os.path.join(input_dir, f'{os.path.splitext(filename)[0]}-S.txt')
+                                output_filename = os.path.join(simple_dir, filename)
                                 with open(output_filename, 'w', encoding='utf-8') as output_file:
                                     output_file.write(formatted_text)
                                 self.log(f"  ✓ Simplified: {book_name}")
                     
-                    self.log(f"\n✓ Step 2 completed! Simplified files saved with '-S' suffix")
+                    self.log(f"\n✓ Step 2 completed! Simplified files saved to: Highlights_by_Book_(Simple)")
                 except Exception as e:
                     self.log(f"\n✗ Error in Step 2: {str(e)}")
-                    raise
-            
-            # Script 3: Generate images
-            if self.script3_var.get():
-                if self.cancel_requested:
-                    self.log("\n❌ Processing cancelled by user")
-                    return
-                    
-                self.log("\n" + "═" * 63)
-                self.log("STEP 3: Generating Quote Images")
-                self.log("═" * 63)
-                
-                try:
-                    font_path = os.path.join(script_dir, "Files", "Fonts", "Vollkorn-Regular.ttf")
-                    input_dir = os.path.join(output_base, "Highlights_by_Book")
-                    
-                    # Configuration
-                    line_spacing = 15
-                    short_quote_threshold = 550
-                    original_image_width = 1080
-                    original_image_height = 1080
-                    larger_image_width = 1080
-                    larger_image_height = 1350
-                    side_padding = 20
-                    bottom_padding = 60
-                    
-                    txt_files = [f for f in os.listdir(input_dir) if f.endswith('-S.txt')]
-                    
-                    for txt_file in txt_files:
-                        if self.cancel_requested:
-                            self.log("\n❌ Processing cancelled by user")
-                            return
-                            
-                        filepath = os.path.join(input_dir, txt_file)
-                        with open(filepath, 'r', encoding='utf-8') as file:
-                            text = file.read()
-                        
-                        sections = text.split('\n\n---\n\n')
-                        book_info = sections[0].split('\n')
-                        book_name = re.sub(r'[^\w\s]', '', book_info[0].strip())
-                        author = re.sub(r'[^\w\s]', '', book_info[1].strip())
-                        
-                        book_folder = os.path.join(input_dir, book_name)
-                        os.makedirs(book_folder, exist_ok=True)
-                        
-                        highlight_pattern = re.compile(r'\d{1,3}\.\s*', re.MULTILINE)
-                        sections[1:] = [highlight_pattern.sub('', section) for section in sections[1:]]
-                        
-                        image_count = 0
-                        for i, highlight in enumerate(sections[1:]):
-                            if self.cancel_requested:
-                                self.log(f"  ⚠️  Cancelled during {book_name} (created {image_count} images)")
-                                return
-                                
-                            if not highlight.strip():
-                                continue
-                                
-                            highlight = highlight[0].capitalize() + highlight[1:]
-                            
-                            if len(highlight) <= short_quote_threshold:
-                                image_width, image_height = original_image_width, original_image_height
-                            else:
-                                image_width, image_height = larger_image_width, larger_image_height
-                            
-                            filename = f"Highlight_{i + 1:04}.webp"
-                            image = Image.new('RGB', (image_width, image_height), color='white')
-                            draw = ImageDraw.Draw(image)
-                            
-                            initial_font_size = 40
-                            font = ImageFont.truetype(font_path, int(initial_font_size))
-                            
-                            wrapped_text = textwrap.fill(highlight, width=43)
-                            wrapped_text_lines = wrapped_text.split('\n')
-                            wrapped_text_lines = [line.strip() for line in wrapped_text_lines if line.strip()]
-                            wrapped_text = '\n'.join(wrapped_text_lines)
-                            
-                            bbox = draw.textbbox((0, 0), wrapped_text, font=font, spacing=line_spacing)
-                            text_width, text_height = bbox[2] - bbox[0], bbox[3] - bbox[1]
-                            
-                            text_x = (image_width - text_width) / 2
-                            text_y = (image_height - text_height) / 2
-                            
-                            draw.multiline_text((text_x, text_y), wrapped_text, fill='black', font=font, align="left", spacing=line_spacing)
-                            
-                            info_font = ImageFont.truetype(font_path, 27)
-                            info_text = f'{book_name} | {author}'.strip()
-                            info_text = re.sub(r'[^\w\s|]', '', info_text)
-                            
-                            info_size = draw.textbbox((0, 0), info_text, font=info_font)
-                            info_width, info_height = info_size[2] - info_size[0], info_size[3] - info_size[1]
-                            
-                            info_x = (image_width - info_width) / 2
-                            info_y = image_height - side_padding - info_height - bottom_padding
-                            
-                            draw.text((info_x, info_y), info_text, fill='black', font=info_font)
-                            
-                            image.save(os.path.join(book_folder, filename), format='WEBP', quality=85)
-                            image_count += 1
-                        
-                        self.log(f"  ✓ {book_name}: {image_count} images created")
-                    
-                    self.log(f"\n✓ Step 3 completed! Images saved as WebP (quality: 85)")
-                except Exception as e:
-                    self.log(f"\n✗ Error in Step 3: {str(e)}")
                     raise
             
             if not self.cancel_requested:
                 self.log("\n" + "═" * 63)
                 self.log("🎉 ALL PROCESSING COMPLETED SUCCESSFULLY!")
                 self.log("═" * 63)
-                self.log(f"\nAll files are in: {os.path.join(output_base, 'Highlights_by_Book')}")
+                self.log(f"\nRaw highlights:        {os.path.join(output_base, 'Highlights_by_Book')}")
+                self.log(f"Simplified highlights: {os.path.join(output_base, 'Highlights_by_Book_(Simple)')}")
                 
                 self.root.after(0, lambda: messagebox.showinfo(
                     "Success! 🎉", 
