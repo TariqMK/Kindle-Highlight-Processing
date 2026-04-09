@@ -22,10 +22,6 @@ The highlights contained within `My Clippings.txt` contain entries from all the 
 
 This application takes `My Clippings.txt` as the input, scans it for all highlights, recognises if there are multiple books and then outputs a text file per book containing all related higlights.
 
-**Usage Specifics:**
-
-
-
 ---
 
 ## Run Directly
@@ -48,11 +44,15 @@ python Kindle_Highlight_Processor.py
 
 All required folders will be automatically created. Enjoy!
 
+---
+
 ## Notes
 
 - The new text files for each related book will be placed in a new folder in the specified directory named `Highlights_by_Book`. If this folder does not exist, it will be created
 - You also have the option to strip the page location metadata and have your highlights stored cleanly for PKMS systems like Obsidian
 - When the application is run and the highlights have been extracted, a summary of books and highlights processed will be displayed in the application itself
+
+---
 
 **Known Issues:**
 
