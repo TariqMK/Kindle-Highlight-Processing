@@ -1,16 +1,14 @@
-# README
+![klippings_logo_v6](https://github.com/user-attachments/assets/5ce2ea13-acf9-4781-9b3d-4fdb4e93fa4d)![klippings_logo_v6](https://github.com/user-attachments/assets/68b3e78f-f1d3-4c32-82cb-50886e97a29f)# README
 
 _**Disclaimer:** Most if not all of the code here has been written in Python with the help of AI_
 
 ---
 
-![klippings_logo_v6](https://github.com/user-attachments/assets/a666dc12-6672-4d0a-9ffa-3d43c4fbae91)<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg width="100%" height="100%" viewBox="0 0 2834 834" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g><g><path d="M966.667,262.5l0,133.333c0,22.996 -18.67,41.667 -41.667,41.667l-133.333,0c-22.996,0 -41.667,-18.67 -41.667,-41.667l0,-133.333c0,-22.996 18.67,-41.667 41.667,-41.667l133.333,0c22.996,0 41.667,18.67 41.667,41.667Z" style="fill:#d1a041;fill-opacity:0.9;"/></g></svg>
-
 ## What is Klippings?
 
 Klippings is a Kindle Highlight Processor aimed for use with Kindle's `My Clippings.txt` file, where book highlights for (sideloaded) documents reside.
 
-The intent behind these scripts are to aid anyone who wishes for more granular control over their highlights and to be able to export and store them in an orgainsed, systematic manner.
+Klippings exists to aid anyone who wishes for more granular control over their highlights and to be able to export and store them in an orgainsed, systematic manner.
 
 Your original `MyClippings.txt` file is not amended in any way.
 
@@ -20,7 +18,7 @@ Your original `MyClippings.txt` file is not amended in any way.
 
 The highlights contained within `My Clippings.txt` contain entries from all the sideloaded books one has read on the Kindle device. For long term flexibility this is both inefficient and prone to data corruption and loss, especially over time as the file size grows ever larger.
 
-This application takes `My Clippings.txt` as the input, scans it for all highlights, recognises if there are multiple books and then outputs a text file per book containing all related higlights.
+Klippings takes `My Clippings.txt` as the input, scans it for all highlights, recognises if there are multiple books and then outputs a text file per book containing all related higlights.
 
 The option to output highlights with or without metadata is available, as illustrated in the screenshots below.
 
