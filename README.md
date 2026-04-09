@@ -40,7 +40,11 @@ Simplified Export (Sample):
 
 ## Run Directly
 
-Download the latest version from the [Releases](https://github.com/TariqMK/Kindle-Highlight-Processing/releases) Page and run the `.exe`. All required folders will be automatically created. Enjoy!
+Download the latest version from the [Releases](https://github.com/TariqMK/Kindle-Highlight-Processing/releases) Page and run the `.exe`. 
+
+All required folders will be automatically created wherever you specify. 
+
+Enjoy!
 
 ## Run From Source
 
