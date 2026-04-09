@@ -4,7 +4,7 @@ _**Disclaimer:** Most if not all of the code here has been written in Python wit
 
 ---
 
-![klippings_logo_v6](https://github.com/user-attachments/assets/5ce2ea13-acf9-4781-9b3d-4fdb4e93fa4d)![klippings_logo_v6](https://github.com/user-attachments/assets/68b3e78f-f1d3-4c32-82cb-50886e97a29f)
+![klippings_logo_v6](https://github.com/user-attachments/assets/5ce2ea13-acf9-4781-9b3d-4fdb4e93fa4d)
 
 ## What is Klippings?
 
