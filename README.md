@@ -16,11 +16,25 @@ Your original `MyClippings.txt` file is not amended in any way.
 
 ## How Does it Work?
 
-**Intent:**
-
 The highlights contained within `My Clippings.txt` contain entries from all the sideloaded books one has read on the Kindle device. For long term flexibility this is both inefficient and prone to data corruption and loss, especially over time as the file size grows ever larger.
 
 This application takes `My Clippings.txt` as the input, scans it for all highlights, recognises if there are multiple books and then outputs a text file per book containing all related higlights.
+
+The option to output highlights with or without metadata is available, as illustrated in the screenshots below.
+
+## Screenshots
+
+User Interface:
+
+![Screenshot 01](https://github.com/user-attachments/assets/f93c7afa-dc2b-4b5d-9a8d-fa4b79bcffa6)
+
+Standard Export (Sample):
+
+<img width="1036" height="1065" alt="image" src="https://github.com/user-attachments/assets/c6d55e20-c3c9-4cb8-86f8-9beb44296793" />
+
+Simplified Export (Sample):
+
+<img width="1037" height="1065" alt="image" src="https://github.com/user-attachments/assets/5daba761-894c-4dc4-822b-67b6a70df817" />
 
 ---
 
