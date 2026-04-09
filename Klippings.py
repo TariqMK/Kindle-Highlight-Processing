@@ -464,9 +464,9 @@ class KindleHighlightsGUI:
         self.clear_button.grid(row=9, column=0, padx=40, pady=(0, 24), sticky="ew")
         
         # Initial message
-        self.log("┌─────────────────────────────────────────────────────────────┐")
-        self.log("│  Welcome to Kindle Highlights Processor!                   │")
-        self.log("└─────────────────────────────────────────────────────────────┘\n")
+        self.log("┌─────────────────────────────────┐")
+        self.log("│  Welcome to Klippings!          │")
+        self.log("└─────────────────────────────────┘\n")
         self.log("📋 Instructions:")
         self.log("  1. Select 'My Clippings.txt' (Browse or drag & drop)")
         self.log("  2. Choose output directory (remembers last selection)")
