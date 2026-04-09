@@ -4,9 +4,9 @@ _**Disclaimer:** Most if not all of the code here has been written in Python wit
 
 ---
 
-## What is Kindle Highlight Processor?
+## What is Klippings?
 
-The scripts within this folder are aimed for use with Kindle's `My Clippings.txt` file, where book highlights for (sideloaded) documents reside.
+Klippings is a Kindle Highlight Processor aimed for use with Kindle's `My Clippings.txt` file, where book highlights for (sideloaded) documents reside.
 
 The intent behind these scripts are to aid anyone who wishes for more granular control over their highlights and to be able to export and store them in an orgainsed, systematic manner.
 
