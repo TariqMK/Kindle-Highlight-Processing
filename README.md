@@ -22,6 +22,8 @@ The highlights contained within `My Clippings.txt` contain entries from all the 
 
 Klippings takes `My Clippings.txt` as the input, scans it for all highlights, recognises if there are multiple books and then outputs a text file per book containing all related higlights.
 
+<img width="1101" height="219" alt="image" src="https://github.com/user-attachments/assets/c3a91832-15f2-44ee-b841-b6e987cfa3c4" />
+
 The option to output highlights with or without metadata is available, as illustrated in the screenshots below.
 
 ## Screenshots
