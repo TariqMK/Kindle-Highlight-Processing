@@ -28,7 +28,7 @@ The option to output highlights with or without metadata is available, as illust
 
 User Interface:
 
-<img width="1354" height="1970" alt="image" src="https://github.com/user-attachments/assets/40ca972f-8664-4879-823c-f5481184036e" />
+<img width="1354" height="1993" alt="image" src="https://github.com/user-attachments/assets/c407faa6-8d8d-44bb-bc28-085ef3dd92b9" />
 
 Standard Export (Sample):
 
